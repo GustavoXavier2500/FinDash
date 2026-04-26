@@ -163,6 +163,45 @@ td:last-child{text-align:right;font-weight:800;font-family:'Nunito',sans-serif;}
 .spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* MODAL TUTORIAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-backdrop.open{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:translateY(16px) scale(0.97);transition:transform .25s;}
+.modal-backdrop.open .modal{transform:translateY(0) scale(1);}
+.modal-header{padding:22px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.modal-header-icon{width:52px;height:52px;background:var(--green-bg);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.modal-header-text h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:19px;color:var(--text);margin-bottom:3px;}
+.modal-header-text p{font-size:12px;color:var(--text3);font-weight:500;}
+.modal-close{width:36px;height:36px;background:var(--card2);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;transition:background .15s;color:var(--text2);}
+.modal-close:hover{background:var(--border);}
+.modal-body{padding:20px 24px;}
+.tutorial-steps{display:flex;flex-direction:column;gap:14px;margin-bottom:22px;}
+.tutorial-step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--green-bg);color:var(--green);font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-body h4{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text);margin-bottom:3px;}
+.step-body p{font-size:13px;color:var(--text2);line-height:1.55;font-weight:500;}
+.step-body code{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:12px;color:var(--green);font-family:monospace;}
+.modal-divider{height:1px;background:var(--border);margin:0 24px;}
+.modal-footer{padding:18px 24px 22px;display:flex;flex-direction:column;gap:10px;}
+.modal-footer-title{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px;}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-download{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue);display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all .18s;text-decoration:none;}
+.btn-download:hover{background:var(--blue);color:#fff;}
+.btn-import-now{background:var(--green);color:#fff;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;border:none;transition:all .18s;box-shadow:0 4px 16px rgba(34,208,122,0.3);}
+[data-theme="light"] .btn-import-now{color:#0d2a1a;}
+.btn-import-now:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(34,208,122,0.4);}
+.col-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.col-tag{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--text2);font-family:monospace;}
+.col-tag.required{border-color:var(--green);color:var(--green);}
+
+@media(max-width:600px){
+  .modal-header{padding:16px 16px 0;}
+  .modal-body{padding:16px 16px;}
+  .modal-footer{padding:14px 16px 18px;}
+  .modal-actions{flex-direction:column;}
+  .btn-download,.btn-import-now{justify-content:center;}
+}
+
 /* HAMBURGER BUTTON */
 .hamburger{display:none;width:40px;height:40px;align-items:center;justify-content:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;font-size:20px;cursor:pointer;transition:all .18s;flex-shrink:0;}
 .hamburger:hover{background:var(--border);}
@@ -251,6 +290,78 @@ td:last-child{text-align:right;font-weight:800;font-family:'Nunito',sans-serif;}
 <div class="toast" id="toast"><span id="t-icon">✓</span><span id="t-msg">Importado!</span></div>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
+<!-- MODAL TUTORIAL IMPORTAÇÃO -->
+<div class="modal-backdrop" id="import-modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div style="display:flex;gap:14px;align-items:center;">
+        <div class="modal-header-icon">📂</div>
+        <div class="modal-header-text">
+          <h2>Importar Planilha</h2>
+          <p>Siga o passo a passo para importar seus dados</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeImportModal()" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="tutorial-steps">
+        <div class="tutorial-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Baixe a Planilha Modelo</h4>
+            <p>Clique em <strong>"Baixar Planilha Modelo"</strong> abaixo para obter o arquivo Excel com o formato correto. Ela já possui exemplos preenchidos para te guiar.</p>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Preencha seus dados</h4>
+            <p>A planilha possui duas abas: <code>Receitas</code> e <code>Despesas</code>. Preencha a partir da <strong>linha 5</strong> — não altere os cabeçalhos. As colunas obrigatórias são:</p>
+            <div class="col-tags">
+              <span class="col-tag required">mes</span>
+              <span class="col-tag required">ano</span>
+              <span class="col-tag required">tipo</span>
+              <span class="col-tag required">categoria</span>
+              <span class="col-tag required">descricao</span>
+              <span class="col-tag required">valor</span>
+              <span class="col-tag">centro de custo</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Valores aceitos em <code>tipo</code></h4>
+            <p>Coloque exatamente <code>receita</code> ou <code>despesa</code> (minúsculas). O campo <code>mes</code> deve ser um número de <code>1</code> a <code>12</code>.</p>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Importe o arquivo</h4>
+            <p>Salve a planilha como <strong>.xlsx</strong> e clique em <strong>"Selecionar Arquivo"</strong>. O dashboard carrega os dados automaticamente e atualiza todos os gráficos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="modal-footer">
+      <div class="modal-footer-title">Pronto para começar?</div>
+      <div class="modal-actions">
+        <a class="btn-download" id="btn-download-modelo" href="#" download="modelo_financeiro_padrao.xlsx">
+          ⬇ Baixar Planilha Modelo
+        </a>
+        <button class="btn-import-now" onclick="closeImportModal(); document.getElementById('file-input').click();">
+          ↑ Selecionar Arquivo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
@@ -264,7 +375,7 @@ td:last-child{text-align:right;font-weight:800;font-family:'Nunito',sans-serif;}
   <button class="nav-item" onclick="goPage('despesas',this)"><span class="nav-icon">💸</span><span>Despesas</span></button>
   <button class="nav-item" onclick="goPage('lancamentos',this)"><span class="nav-icon">📋</span><span>Lançamentos</span></button>
   <div class="sidebar-bottom">
-    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><span>↑</span><span>Importar Planilha</span></button>
+    <button class="btn btn-primary" onclick="openImportModal()"><span>↑</span><span>Importar Planilha</span></button>
   </div>
 </aside>
 
@@ -716,51 +827,123 @@ document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=
   if(window.innerWidth<=600) closeSidebar();
 }));
 
-// DEMO DATA
-rawData=[
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:89161.56,centro:'Convênio Unimed'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:53900,centro:'SMS Alcobaça'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:39320,centro:'Convênio Amor Saúde'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:33450,centro:'SMS Teixeira de Freitas'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:31392.98,centro:'Sepaco'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:10000,centro:'Policlínica Santa Clara'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:6350,centro:'SMS Vereda'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:3065.44,centro:'Bradesco'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Convênios',descricao:'Receita de Convênios',valor:3000,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receita de Granito',descricao:'Receita de Granito',valor:164744.24,centro:'Cartão'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Ressonância Magnética',descricao:'Ressonância Magnética',valor:117035,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Tomografia Computadorizada',descricao:'Tomografia Computadorizada',valor:72190,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Recurso de Glosas',descricao:'Recurso de Glosas',valor:12570.97,centro:'Sepaco'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Empréstimo de Sócios',descricao:'Empréstimo de Sócios',valor:12000,centro:'Depositos BNB'},
-  {mes:3,ano:2026,tipo:'receita',categoria:'Receitas de Vendas',descricao:'Receitas de Vendas',valor:40,centro:'2º Via de Exame'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Infraestrutura e Ocupação',descricao:'Pagamento de Médicos',valor:100007.22,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'Salários',valor:1988.3,centro:'Clínica Santa Cecília'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'Salários',valor:64193.76,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Equipamentos e Ativos',descricao:'Máquinas e Equipamentos',valor:35766.71,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Infraestrutura e Ocupação',descricao:'Manutenção Predial',valor:35747.42,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'PRL - Participação nos Lucros',valor:30000,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Equipamentos e Ativos',descricao:'Seguro de Equipamentos',valor:29596.93,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Impostos Federais',valor:26010.22,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'INSS sobre Salários',valor:25535.55,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Infraestrutura e Ocupação',descricao:'Energia Elétrica',valor:21325.08,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:5881.21,centro:'Convênio Unimed'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:2418.18,centro:'Convênio Amor Saúde'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:1930.65,centro:'Sepaco'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:240,centro:'SMS Alcobaça'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:158.94,centro:'Bradesco'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:54.75,centro:'SMS Vereda'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Tributos e Obrigações Fiscais',descricao:'Retenção de Impostos',valor:8913.94,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Ajustes e Perdas Operacionais',descricao:'Estornos / Devoluções',valor:18153.55,centro:'SMS Prado'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Materiais e Insumos Operacionais',descricao:'Medicações',valor:16948.49,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Infraestrutura e Ocupação',descricao:'Aluguel',valor:11493.22,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Serviços Profissionais e Terceiros',descricao:'Serviços de Terceiros',valor:8456.5,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'Férias',valor:7654.51,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Materiais e Insumos Operacionais',descricao:'Materiais Aplicados',valor:7138.92,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Financeiro (Custos de Capital e Bancários)',descricao:'Juros Sobre Financiamento',valor:6437.74,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'Cursos e Treinamentos',valor:4993,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Pessoal e Encargos',descricao:'Horas Extras',valor:4402,centro:'Sem Centro de Custo'},
-  {mes:3,ano:2026,tipo:'despesa',categoria:'Materiais e Insumos Operacionais',descricao:'Materiais de Escritório',valor:3870,centro:'Sem Centro de Custo'},
-];
+// MODAL IMPORTAÇÃO
+const XLSX_B64='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';
+
+function openImportModal(){
+  document.getElementById('import-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeImportModal(){
+  document.getElementById('import-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+// Fecha ao clicar no backdrop
+document.getElementById('import-modal').addEventListener('click',function(e){
+  if(e.target===this) closeImportModal();
+});
+// ESC fecha o modal
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeImportModal();});
+// Configura o botão de download com o xlsx embutido em base64
+(function(){
+  const b64=XLSX_B64;
+  const bin=atob(b64);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  document.getElementById('btn-download-modelo').href=url;
+})();
+
+// ── GERADOR DE DADOS FICTÍCIOS ──────────────────────────────────────────────
+(function gerarDadosFicticios(){
+  const rnd  = (min,max)=>Math.round((Math.random()*(max-min)+min)*100)/100;
+  const pick = arr=>arr[Math.floor(Math.random()*arr.length)];
+
+  const catReceitas=[
+    {cat:'Receita de Convênios',   desc:'Receita de Convênios'},
+    {cat:'Receita de Exames',      desc:'Ressonância Magnética'},
+    {cat:'Receita de Exames',      desc:'Tomografia Computadorizada'},
+    {cat:'Receita de Exames',      desc:'Ultrassonografia'},
+    {cat:'Receita de Procedimentos',desc:'Consultas Médicas'},
+    {cat:'Receita de Procedimentos',desc:'Cirurgias Ambulatoriais'},
+    {cat:'Receita de Granito',     desc:'Receita de Granito'},
+    {cat:'Recurso de Glosas',      desc:'Recurso de Glosas'},
+    {cat:'Receitas de Vendas',     desc:'Venda de Medicamentos'},
+    {cat:'Receitas Financeiras',   desc:'Rendimento de Aplicações'},
+  ];
+  const centrosR=[
+    'Convênio Unimed','SMS Teixeira de Freitas','Convênio Amor Saúde',
+    'Bradesco Saúde','Sepaco','Policlínica Santa Clara','SMS Alcobaça',
+    'SMS Vereda','Cartão','Sem Centro de Custo',
+  ];
+
+  const catDespesas=[
+    {cat:'Pessoal e Encargos',                      desc:'Salários'},
+    {cat:'Pessoal e Encargos',                      desc:'INSS sobre Salários'},
+    {cat:'Pessoal e Encargos',                      desc:'FGTS'},
+    {cat:'Pessoal e Encargos',                      desc:'Horas Extras'},
+    {cat:'Pessoal e Encargos',                      desc:'Férias'},
+    {cat:'Pessoal e Encargos',                      desc:'Cursos e Treinamentos'},
+    {cat:'Infraestrutura e Ocupação',               desc:'Aluguel'},
+    {cat:'Infraestrutura e Ocupação',               desc:'Energia Elétrica'},
+    {cat:'Infraestrutura e Ocupação',               desc:'Manutenção Predial'},
+    {cat:'Infraestrutura e Ocupação',               desc:'Pagamento de Médicos'},
+    {cat:'Equipamentos e Ativos',                   desc:'Máquinas e Equipamentos'},
+    {cat:'Equipamentos e Ativos',                   desc:'Seguro de Equipamentos'},
+    {cat:'Materiais e Insumos Operacionais',        desc:'Medicações'},
+    {cat:'Materiais e Insumos Operacionais',        desc:'Materiais Aplicados'},
+    {cat:'Materiais e Insumos Operacionais',        desc:'Materiais de Escritório'},
+    {cat:'Tributos e Obrigações Fiscais',           desc:'Impostos Federais'},
+    {cat:'Tributos e Obrigações Fiscais',           desc:'Retenção de Impostos'},
+    {cat:'Serviços Profissionais e Terceiros',      desc:'Serviços de Terceiros'},
+    {cat:'Financeiro (Custos de Capital e Bancários)',desc:'Juros Sobre Financiamento'},
+    {cat:'Ajustes e Perdas Operacionais',           desc:'Estornos / Devoluções'},
+  ];
+  const centrosD=[
+    'Sem Centro de Custo','Clínica Santa Cecília','SMS Prado',
+    'Convênio Unimed','Convênio Amor Saúde','Sepaco',
+  ];
+
+  // Gera 6 meses: jan–jun 2026
+  const meses=[1,2,3,4,5,6];
+  const ano=2026;
+  const dados=[];
+
+  meses.forEach(mes=>{
+    // ── Receitas do mês ──────────────────────────────────
+    // Seleciona entre 8 e 12 itens de receita aleatórios
+    const qtdR = Math.floor(Math.random()*5)+8;
+    let totalReceita=0;
+    for(let i=0;i<qtdR;i++){
+      const item=pick(catReceitas);
+      const valor=rnd(3000,120000);
+      totalReceita+=valor;
+      dados.push({mes,ano,tipo:'receita',categoria:item.cat,descricao:item.desc,
+                  valor,centro:pick(centrosR)});
+    }
+
+    // ── Despesas do mês ─────────────────────────────────
+    // Garante que o total de despesas = 65%~80% das receitas → resultado sempre positivo
+    const ratioGasto = rnd(0.65,0.80);
+    const budgetDespesa = totalReceita * ratioGasto;
+
+    const qtdD = Math.floor(Math.random()*6)+10;
+    // Distribui o budget proporcionalmente com variação aleatória
+    const pesos=Array.from({length:qtdD},()=>Math.random());
+    const somaPesos=pesos.reduce((a,b)=>a+b,0);
+
+    pesos.forEach(peso=>{
+      const item=pick(catDespesas);
+      const valor=Math.round((budgetDespesa*(peso/somaPesos))*100)/100;
+      if(valor<100) return; // descarta valores irrisórios
+      dados.push({mes,ano,tipo:'despesa',categoria:item.cat,descricao:item.desc,
+                  valor,centro:pick(centrosD)});
+    });
+  });
+
+  rawData=dados;
+})();
 populateFilters(); applyFilters();
 </script>
 </body>
